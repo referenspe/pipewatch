@@ -1,0 +1,39 @@
+{
+  "log_level": "INFO",
+  "alert_channels": ["logging"],
+  "targets": [
+    {
+      "name": "kafka_consumer_lag",
+      "metric_key": "kafka.consumer.lag",
+      "interval_seconds": 30,
+      "tags": {"env": "production", "team": "data-eng"},
+      "threshold": {
+        "warning": 500,
+        "critical": 2000,
+        "comparison": "gt"
+      }
+    },
+    {
+      "name": "pipeline_error_rate",
+      "metric_key": "pipeline.error_rate",
+      "interval_seconds": 60,
+      "tags": {"env": "production"},
+      "threshold": {
+        "warning": 0.01,
+        "critical": 0.05,
+        "comparison": "gt"
+      }
+    },
+    {
+      "name": "batch_job_duration_seconds",
+      "metric_key": "batch.duration_seconds",
+      "interval_seconds": 120,
+      "tags": {"job": "nightly-etl"},
+      "threshold": {
+        "warning": 1800,
+        "critical": 3600,
+        "comparison": "gt"
+      }
+    }
+  ]
+}
