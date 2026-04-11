@@ -1,66 +1,58 @@
-"""Tracks historical snapshots of pipeline metric values."""
+"""In-memory metric history store with snapshot recording."""
 
-from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from __future__ import annotations
+
+from dataclasses import dataclass
 from typing import Dict, List, Optional
 
-from pipewatch.metrics import PipelineMetric, MetricStatus
+from pipewatch.metrics import MetricStatus, PipelineMetric
 
 
 @dataclass
 class MetricSnapshot:
-    """A point-in-time reading of a single pipeline metric."""
-
-    metric_key: str
-    timestamp: datetime
+    key: str
     value: float
     status: MetricStatus
+    timestamp: float
 
     @classmethod
-    def from_metric(cls, metric: PipelineMetric) -> "MetricSnapshot":
+    def from_metric(cls, metric: PipelineMetric, timestamp: float) -> "MetricSnapshot":
         return cls(
-            metric_key=metric.key,
-            timestamp=datetime.now(tz=timezone.utc),
+            key=metric.key,
             value=metric.value,
             status=metric.status,
+            timestamp=timestamp,
         )
 
 
 class MetricHistory:
-    """Stores rolling snapshots for multiple metric keys."""
+    """Stores ordered snapshots per metric key."""
 
-    def __init__(self, max_entries: int = 100) -> None:
-        self._max_entries = max_entries
+    def __init__(self, max_per_key: int = 100) -> None:
+        self.max_per_key = max_per_key
         self._store: Dict[str, List[MetricSnapshot]] = {}
 
-    def record(self, metric: PipelineMetric) -> None:
-        """Record a new snapshot for the given metric."""
-        snapshot = MetricSnapshot.from_metric(metric)
-        bucket = self._store.setdefault(metric.key, [])
+    def record(self, snapshot: MetricSnapshot) -> None:
+        bucket = self._store.setdefault(snapshot.key, [])
         bucket.append(snapshot)
-        if len(bucket) > self._max_entries:
+        if len(bucket) > self.max_per_key:
             bucket.pop(0)
 
-    def latest(self, metric_key: str) -> Optional[MetricSnapshot]:
-        """Return the most recent snapshot for a key, or None."""
-        bucket = self._store.get(metric_key, [])
+    def latest(self, key: str) -> Optional[MetricSnapshot]:
+        bucket = self._store.get(key, [])
         return bucket[-1] if bucket else None
 
-    def all(self, metric_key: str) -> List[MetricSnapshot]:
-        """Return all snapshots for a key in chronological order."""
-        return list(self._store.get(metric_key, []))
+    def all(self, key: str) -> List[MetricSnapshot]:
+        return list(self._store.get(key, []))
 
     def keys(self) -> List[str]:
-        """Return all tracked metric keys."""
         return list(self._store.keys())
 
-    def clear(self, metric_key: Optional[str] = None) -> None:
-        """Clear history for a specific key or all keys."""
-        if metric_key is not None:
-            self._store.pop(metric_key, None)
-        else:
-            self._store.clear()
+    def clear(self, key: str) -> None:
+        self._store.pop(key, None)
 
-    def count(self, metric_key: str) -> int:
-        """Return the number of stored snapshots for a key."""
-        return len(self._store.get(metric_key, []))
+    def clear_all(self) -> None:
+        self._store.clear()
+
+    def count(self, key: str) -> int:
+        return len(self._store.get(key, []))
