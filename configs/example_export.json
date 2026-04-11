@@ -1,0 +1,39 @@
+{
+  "_comment": "Example showing how to invoke the exporter from a custom script.",
+  "export": {
+    "formats": ["json", "csv"],
+    "output_dir": "./exports",
+    "filename_prefix": "pipewatch_export",
+    "include_summaries": true
+  },
+  "targets": [
+    {
+      "name": "orders-pipeline",
+      "metric_key": "lag_seconds",
+      "interval": 60,
+      "threshold": {
+        "warning": 30,
+        "critical": 120
+      }
+    },
+    {
+      "name": "payments-pipeline",
+      "metric_key": "error_rate_pct",
+      "interval": 30,
+      "threshold": {
+        "warning": 1.0,
+        "critical": 5.0
+      }
+    },
+    {
+      "name": "inventory-sync",
+      "metric_key": "records_per_second",
+      "interval": 120,
+      "threshold": {
+        "warning": 100,
+        "critical": 20,
+        "direction": "lt"
+      }
+    }
+  ]
+}
