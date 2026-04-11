@@ -1,0 +1,37 @@
+{
+  "_comment": "Example anomaly detector configuration for pipewatch",
+  "anomaly": {
+    "mild_threshold": 2.0,
+    "severe_threshold": 3.5,
+    "min_samples": 5
+  },
+  "targets": [
+    {
+      "name": "orders-pipeline",
+      "metric_key": "latency_ms",
+      "interval": 30,
+      "thresholds": {
+        "warning": 200,
+        "critical": 500
+      }
+    },
+    {
+      "name": "payments-pipeline",
+      "metric_key": "error_rate",
+      "interval": 60,
+      "thresholds": {
+        "warning": 0.01,
+        "critical": 0.05
+      }
+    },
+    {
+      "name": "inventory-pipeline",
+      "metric_key": "queue_depth",
+      "interval": 15,
+      "thresholds": {
+        "warning": 1000,
+        "critical": 5000
+      }
+    }
+  ]
+}
