@@ -41,3 +41,20 @@ class AnomalyReporter:
 
     def has_severe(self) -> bool:
         return any(r.level == AnomalyLevel.SEVERE for r in self._results)
+
+    def summary(self) -> str:
+        """Return a one-line summary of anomaly counts by level.
+
+        Example output: "3 metrics checked: 1 mild, 1 severe, 1 OK"
+        """
+        counts = {level: 0 for level in AnomalyLevel}
+        for r in self._results:
+            counts[r.level] += 1
+        total = len(self._results)
+        ok = counts[AnomalyLevel.NONE]
+        mild = counts[AnomalyLevel.MILD]
+        severe = counts[AnomalyLevel.SEVERE]
+        return (
+            f"{total} metrics checked: "
+            f"{severe} severe, {mild} mild, {ok} OK"
+        )
