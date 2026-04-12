@@ -1,0 +1,31 @@
+{
+  "sampler": {
+    "default_rate": 1.0,
+    "max_burst": 5,
+    "per_key_rates": {
+      "high_frequency_metric": 10.0,
+      "low_priority_metric": 0.1
+    }
+  },
+  "targets": [
+    {
+      "name": "orders_pipeline",
+      "metric_key": "orders.latency_ms",
+      "interval": 30,
+      "thresholds": {
+        "warning": 200,
+        "critical": 500
+      }
+    },
+    {
+      "name": "inventory_pipeline",
+      "metric_key": "inventory.record_count",
+      "interval": 60,
+      "thresholds": {
+        "warning": 1000,
+        "critical": 500,
+        "direction": "lt"
+      }
+    }
+  ]
+}
