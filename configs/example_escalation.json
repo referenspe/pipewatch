@@ -1,0 +1,44 @@
+{
+  "escalation": {
+    "escalate_after": 3,
+    "escalation_window": 300,
+    "max_level": "CRITICAL"
+  },
+  "comment": [
+    "escalate_after  : number of consecutive alert firings before escalation triggers.",
+    "escalation_window : seconds — if the gap between two firings exceeds this value",
+    "                    the consecutive counter is reset to zero.",
+    "max_level       : the MetricStatus level to promote the alert to once escalated.",
+    "                  Allowed values: WARNING, CRITICAL."
+  ],
+  "example_targets": [
+    {
+      "name": "orders-pipeline",
+      "metric_key": "orders.lag_seconds",
+      "interval": 60,
+      "thresholds": {
+        "warning": 30,
+        "critical": 120
+      },
+      "escalation": {
+        "escalate_after": 2,
+        "escalation_window": 180,
+        "max_level": "CRITICAL"
+      }
+    },
+    {
+      "name": "payments-pipeline",
+      "metric_key": "payments.error_rate",
+      "interval": 30,
+      "thresholds": {
+        "warning": 0.01,
+        "critical": 0.05
+      },
+      "escalation": {
+        "escalate_after": 5,
+        "escalation_window": 600,
+        "max_level": "CRITICAL"
+      }
+    }
+  ]
+}
