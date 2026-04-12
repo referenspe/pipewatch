@@ -1,0 +1,28 @@
+{
+  "replay": {
+    "max_snapshots": 200,
+    "stop_on_critical": false
+  },
+  "targets": [
+    {
+      "name": "orders-pipeline",
+      "metric_key": "orders.latency_ms",
+      "thresholds": {
+        "warning": 300,
+        "critical": 800
+      }
+    },
+    {
+      "name": "inventory-sync",
+      "metric_key": "inventory.error_rate",
+      "thresholds": {
+        "warning": 0.05,
+        "critical": 0.15
+      }
+    }
+  ],
+  "notes": [
+    "Set stop_on_critical to true to halt replay at the first CRITICAL event.",
+    "max_snapshots limits how many historical points are re-evaluated per metric."
+  ]
+}
