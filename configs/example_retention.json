@@ -1,0 +1,26 @@
+{
+  "retention": {
+    "max_age_seconds": 86400,
+    "max_entries": 5000
+  },
+  "targets": [
+    {
+      "name": "orders-pipeline",
+      "metric_key": "orders.latency_ms",
+      "interval": 30,
+      "thresholds": {
+        "warning": 200,
+        "critical": 500
+      }
+    },
+    {
+      "name": "inventory-pipeline",
+      "metric_key": "inventory.error_rate",
+      "interval": 60,
+      "thresholds": {
+        "warning": 0.05,
+        "critical": 0.15
+      }
+    }
+  ]
+}

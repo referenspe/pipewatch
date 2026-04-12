@@ -1,58 +1,57 @@
-"""In-memory metric history store with snapshot recording."""
-
+"""Thin time-series store for pipeline metric snapshots."""
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Dict, List, Optional
+from collections import defaultdict
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
+from typing import Dict, Iterable, List, Optional
 
-from pipewatch.metrics import MetricStatus, PipelineMetric
+from pipewatch.metrics import PipelineMetric
 
 
 @dataclass
 class MetricSnapshot:
+    """A single recorded observation of a metric."""
+
     key: str
     value: float
-    status: MetricStatus
-    timestamp: float
+    status: str
+    recorded_at: datetime = field(
+        default_factory=lambda: datetime.now(tz=timezone.utc)
+    )
 
     @classmethod
-    def from_metric(cls, metric: PipelineMetric, timestamp: float) -> "MetricSnapshot":
+    def from_metric(cls, metric: PipelineMetric) -> "MetricSnapshot":
         return cls(
             key=metric.key,
             value=metric.value,
-            status=metric.status,
-            timestamp=timestamp,
+            status=metric.status.value,
         )
 
 
 class MetricHistory:
-    """Stores ordered snapshots per metric key."""
+    """In-memory ring-store for MetricSnapshot objects."""
 
-    def __init__(self, max_per_key: int = 100) -> None:
-        self.max_per_key = max_per_key
-        self._store: Dict[str, List[MetricSnapshot]] = {}
+    def __init__(self) -> None:
+        self._store: Dict[str, List[MetricSnapshot]] = defaultdict(list)
 
-    def record(self, snapshot: MetricSnapshot) -> None:
-        bucket = self._store.setdefault(snapshot.key, [])
-        bucket.append(snapshot)
-        if len(bucket) > self.max_per_key:
-            bucket.pop(0)
+    def record(self, metric: PipelineMetric) -> None:
+        snapshot = MetricSnapshot.from_metric(metric)
+        self._store[metric.key].append(snapshot)
 
     def latest(self, key: str) -> Optional[MetricSnapshot]:
-        bucket = self._store.get(key, [])
-        return bucket[-1] if bucket else None
+        entries = self._store.get(key, [])
+        return entries[-1] if entries else None
 
-    def all(self, key: str) -> List[MetricSnapshot]:
+    def all(self, key: str) -> Iterable[MetricSnapshot]:
         return list(self._store.get(key, []))
 
-    def keys(self) -> List[str]:
+    def replace(self, key: str, snapshots: List[MetricSnapshot]) -> None:
+        """Overwrite stored snapshots for *key* (used by retention pruning)."""
+        self._store[key] = list(snapshots)
+
+    def keys(self) -> Iterable[str]:
         return list(self._store.keys())
 
     def clear(self, key: str) -> None:
         self._store.pop(key, None)
-
-    def clear_all(self) -> None:
-        self._store.clear()
-
-    def count(self, key: str) -> int:
-        return len(self._store.get(key, []))
