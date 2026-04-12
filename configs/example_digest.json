@@ -1,0 +1,37 @@
+{
+  "digest": {
+    "title": "Nightly Pipeline Health Digest",
+    "include_ok": false,
+    "max_entries": 25
+  },
+  "targets": [
+    {
+      "name": "orders-pipeline",
+      "metric_key": "orders.lag_seconds",
+      "interval": 60,
+      "thresholds": {
+        "warning": 30,
+        "critical": 120
+      }
+    },
+    {
+      "name": "inventory-pipeline",
+      "metric_key": "inventory.error_rate",
+      "interval": 120,
+      "thresholds": {
+        "warning": 0.05,
+        "critical": 0.20
+      }
+    },
+    {
+      "name": "payments-pipeline",
+      "metric_key": "payments.throughput",
+      "interval": 30,
+      "thresholds": {
+        "warning": 100,
+        "critical": 50,
+        "comparison": "lt"
+      }
+    }
+  ]
+}
