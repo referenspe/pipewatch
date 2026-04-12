@@ -1,0 +1,22 @@
+{
+  "_comment": "Example silence rules for pipewatch maintenance windows.",
+  "silencer": {
+    "rules": [
+      {
+        "metric_key": "pipeline.lag_seconds",
+        "duration_seconds": 3600,
+        "reason": "Scheduled maintenance window — lag spike expected"
+      },
+      {
+        "metric_key": "pipeline.error_rate",
+        "duration_seconds": 1800,
+        "reason": "Deploying hotfix — transient errors anticipated"
+      }
+    ]
+  },
+  "_usage": [
+    "Load rules at startup and call silencer.silence(key, duration, reason)",
+    "Before dispatching an alert call silencer.is_silenced(metric_key)",
+    "Run silencer.prune() periodically to clean up expired entries"
+  ]
+}
