@@ -1,0 +1,21 @@
+{
+  "_comment": "Example checkpoint configuration for pipewatch",
+  "checkpoint": {
+    "stall_after": 300,
+    "max_history": 50
+  },
+  "stages": [
+    {
+      "name": "ingest",
+      "description": "Raw data ingestion offset"
+    },
+    {
+      "name": "transform",
+      "description": "Transformed row count"
+    },
+    {
+      "name": "load",
+      "description": "Rows written to destination"
+    }
+  ]
+}
