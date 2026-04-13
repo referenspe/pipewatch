@@ -1,0 +1,31 @@
+{
+  "pipeline_map": {
+    "allow_cycles": false
+  },
+  "stages": [
+    {
+      "name": "ingest",
+      "depends_on": []
+    },
+    {
+      "name": "validate",
+      "depends_on": ["ingest"]
+    },
+    {
+      "name": "transform",
+      "depends_on": ["validate"]
+    },
+    {
+      "name": "enrich",
+      "depends_on": ["validate"]
+    },
+    {
+      "name": "load",
+      "depends_on": ["transform", "enrich"]
+    },
+    {
+      "name": "report",
+      "depends_on": ["load"]
+    }
+  ]
+}
