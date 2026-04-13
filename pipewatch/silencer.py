@@ -20,6 +20,11 @@ class SilenceRule:
         now = now if now is not None else time.time()
         return now < self.expires_at
 
+    def remaining_seconds(self, now: Optional[float] = None) -> float:
+        """Return the number of seconds until this rule expires (0.0 if already expired)."""
+        now = now if now is not None else time.time()
+        return max(0.0, self.expires_at - now)
+
     def to_dict(self) -> dict:
         return {
             "metric_key": self.metric_key,
@@ -76,3 +81,11 @@ class Silencer:
         """Return all currently active silence rules across all metric keys."""
         now = now if now is not None else time.time()
         return [r for rules in self._rules.values() for r in rules if r.is_active(now)]
+
+    def cancel(self, metric_key: str) -> int:
+        """Immediately cancel all silence rules for *metric_key*.
+
+        Returns the number of rules that were removed.
+        """
+        rules = self._rules.pop(metric_key, [])
+        return len(rules)
