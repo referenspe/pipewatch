@@ -1,0 +1,28 @@
+{
+  "_comment": "Example alert budget configuration for pipewatch.",
+  "budget": {
+    "max_alerts": 10,
+    "window_seconds": 3600,
+    "per_key": false
+  },
+  "targets": [
+    {
+      "name": "orders_pipeline",
+      "metric_key": "orders.processed",
+      "interval": 30,
+      "thresholds": {
+        "warning": 500,
+        "critical": 1000
+      }
+    },
+    {
+      "name": "payment_pipeline",
+      "metric_key": "payments.latency_ms",
+      "interval": 60,
+      "thresholds": {
+        "warning": 200,
+        "critical": 500
+      }
+    }
+  ]
+}
