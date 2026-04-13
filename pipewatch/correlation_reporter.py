@@ -39,3 +39,22 @@ class CorrelationReporter:
 
     def strong_pairs(self) -> List[CorrelationResult]:
         return [r for r in self._results if r.strength == CorrelationStrength.STRONG]
+
+    def summary(self) -> str:
+        """Return a one-line summary of the correlation results.
+
+        Reports the total number of pairs analysed and breaks down how many
+        fall into each strength category.
+        """
+        if not self._results:
+            return "No correlation data available."
+        counts = {s: 0 for s in CorrelationStrength}
+        for r in self._results:
+            counts[r.strength] += 1
+        total = len(self._results)
+        parts = ", ".join(
+            f"{counts[s]} {_STRENGTH_LABEL[s]}"
+            for s in CorrelationStrength
+            if counts[s] > 0
+        )
+        return f"{total} pair(s) analysed: {parts}."
