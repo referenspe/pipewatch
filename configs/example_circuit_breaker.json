@@ -1,0 +1,28 @@
+{
+  "_comment": "Example circuit breaker configuration for pipewatch.",
+  "circuit_breaker": {
+    "failure_threshold": 5,
+    "recovery_timeout": 60,
+    "success_threshold": 2
+  },
+  "targets": [
+    {
+      "name": "orders_pipeline",
+      "metric_key": "orders.lag_seconds",
+      "interval": 30,
+      "thresholds": {
+        "warning": 120,
+        "critical": 300
+      }
+    },
+    {
+      "name": "inventory_sync",
+      "metric_key": "inventory.error_rate",
+      "interval": 60,
+      "thresholds": {
+        "warning": 0.05,
+        "critical": 0.20
+      }
+    }
+  ]
+}
