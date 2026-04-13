@@ -1,0 +1,37 @@
+{
+  "_comment": "Example tag-filter configuration for pipewatch.",
+  "tag_filter": {
+    "include": ["prod", "critical"],
+    "exclude": ["dev", "test"],
+    "match_all_include": false
+  },
+  "targets": [
+    {
+      "name": "orders-pipeline",
+      "metric_key": "orders.lag_seconds",
+      "tags": ["prod", "critical"],
+      "thresholds": {
+        "warning": 30,
+        "critical": 120
+      }
+    },
+    {
+      "name": "analytics-pipeline",
+      "metric_key": "analytics.lag_seconds",
+      "tags": ["dev"],
+      "thresholds": {
+        "warning": 60,
+        "critical": 300
+      }
+    },
+    {
+      "name": "billing-pipeline",
+      "metric_key": "billing.error_rate",
+      "tags": ["prod"],
+      "thresholds": {
+        "warning": 0.01,
+        "critical": 0.05
+      }
+    }
+  ]
+}
