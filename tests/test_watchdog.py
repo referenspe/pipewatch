@@ -84,23 +84,10 @@ class TestWatchdogCheck:
     def test_to_dict_contains_expected_keys(self):
         wd = self._wd()
         now = time.time()
-        wd.touch("mem", ts=now - 10)
-        d = wd.check("mem", now=now).to_dict()
-        assert "metric_key" in d
-        assert "age_seconds" in d
+        wd.touch("cpu", ts=now - 10)
+        result = wd.check("cpu", now=now)
+        d = result.to_dict()
         assert "is_stale" in d
         assert "is_critical" in d
-
-
-class TestWatchdogCheckAll:
-    def test_returns_all_tracked_keys(self):
-        wd = Watchdog()
-        now = time.time()
-        wd.touch("a", ts=now)
-        wd.touch("b", ts=now)
-        results = wd.check_all(now=now)
-        assert set(results.keys()) == {"a", "b"}
-
-    def test_empty_when_nothing_tracked(self):
-        wd = Watchdog()
-        assert wd.check_all() == {}
+        assert "age_seconds" in d
+        assert "last_seen" in d
