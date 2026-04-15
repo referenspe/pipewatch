@@ -1,0 +1,12 @@
+{
+  "comment": "Cooldown configuration — prevents alert floods by enforcing quiet periods per metric key.",
+  "cooldown": {
+    "default_seconds": 300,
+    "per_key": {
+      "cpu_usage": 120,
+      "memory_usage": 180,
+      "disk_io": 60,
+      "error_rate": 90
+    }
+  }
+}
