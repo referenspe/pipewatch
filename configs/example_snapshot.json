@@ -1,0 +1,27 @@
+{
+  "snapshot": {
+    "label": "production",
+    "include_ok": false,
+    "max_entries": 200
+  },
+  "targets": [
+    {
+      "name": "ingestion-pipeline",
+      "metric_key": "rows_per_second",
+      "interval": 30,
+      "thresholds": {
+        "warning": 500,
+        "critical": 100
+      }
+    },
+    {
+      "name": "transform-stage",
+      "metric_key": "error_rate",
+      "interval": 60,
+      "thresholds": {
+        "warning": 0.05,
+        "critical": 0.20
+      }
+    }
+  ]
+}
