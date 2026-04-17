@@ -1,0 +1,18 @@
+{
+  "pause": {
+    "max_pause_seconds": 1800,
+    "auto_resume": true
+  },
+  "targets": [
+    {
+      "name": "etl_ingestion",
+      "metric_key": "rows_processed",
+      "interval": 30
+    },
+    {
+      "name": "transform_stage",
+      "metric_key": "transform_latency_ms",
+      "interval": 60
+    }
+  ]
+}
