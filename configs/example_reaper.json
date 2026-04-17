@@ -1,0 +1,11 @@
+{
+  "reaper": {
+    "stale_seconds": 90,
+    "critical_seconds": 240
+  },
+  "targets": [
+    {"key": "etl_ingest"},
+    {"key": "transform_stage"},
+    {"key": "load_warehouse"}
+  ]
+}
