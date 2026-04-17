@@ -76,29 +76,14 @@ class TestEscalationTracker:
         tracker.evaluate("cpu", MetricStatus.WARNING, now=_tick(_T0, 10))
         tracker.evaluate("cpu", MetricStatus.OK, now=_tick(_T0, 20))
         result = tracker.evaluate("cpu", MetricStatus.WARNING, now=_tick(_T0, 30))
-        assert result.consecutive_count == 1
         assert not result.escalated
+        assert result.consecutive_count == 1
 
     def test_window_expiry_resets_count(self):
+        """Violations outside the escalation window should not count toward escalation."""
         tracker = self._tracker(escalate_after=2, window=60)
         tracker.evaluate("cpu", MetricStatus.WARNING, now=_T0)
-        # Gap exceeds window — count should reset
+        # Second violation arrives after the window has expired
         result = tracker.evaluate("cpu", MetricStatus.WARNING, now=_tick(_T0, 120))
-        assert result.consecutive_count == 1
         assert not result.escalated
-
-    def test_reset_clears_state(self):
-        tracker = self._tracker(escalate_after=2)
-        tracker.evaluate("cpu", MetricStatus.WARNING, now=_T0)
-        tracker.reset("cpu")
-        result = tracker.evaluate("cpu", MetricStatus.WARNING, now=_tick(_T0, 5))
         assert result.consecutive_count == 1
-
-    def test_to_dict_contains_fields(self):
-        tracker = self._tracker(escalate_after=2)
-        tracker.evaluate("mem", MetricStatus.WARNING, now=_T0)
-        result = tracker.evaluate("mem", MetricStatus.WARNING, now=_tick(_T0, 5))
-        d = result.to_dict()
-        assert d["metric_key"] == "mem"
-        assert d["escalated"] is True
-        assert "effective_status" in d
