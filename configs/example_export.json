@@ -4,7 +4,8 @@
     "formats": ["json", "csv"],
     "output_dir": "./exports",
     "filename_prefix": "pipewatch_export",
-    "include_summaries": true
+    "include_summaries": true,
+    "overwrite_existing": false
   },
   "targets": [
     {
@@ -13,7 +14,8 @@
       "interval": 60,
       "threshold": {
         "warning": 30,
-        "critical": 120
+        "critical": 120,
+        "direction": "gt"
       }
     },
     {
@@ -22,7 +24,8 @@
       "interval": 30,
       "threshold": {
         "warning": 1.0,
-        "critical": 5.0
+        "critical": 5.0,
+        "direction": "gt"
       }
     },
     {
