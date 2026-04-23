@@ -1,0 +1,20 @@
+{
+  "comment": "Example outlier detection configuration for pipewatch",
+  "outlier": {
+    "min_samples": 8,
+    "iqr_multiplier": 1.5,
+    "severe_multiplier": 3.0
+  },
+  "targets": [
+    {
+      "name": "queue_depth",
+      "metric_key": "pipeline.queue.depth",
+      "interval": 30
+    },
+    {
+      "name": "processing_time",
+      "metric_key": "pipeline.processing.time_ms",
+      "interval": 60
+    }
+  ]
+}
