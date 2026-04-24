@@ -21,6 +21,15 @@
         "warning": 0.05,
         "critical": 0.15
       }
+    },
+    {
+      "name": "payments-pipeline",
+      "metric_key": "payments.failure_rate",
+      "interval": 30,
+      "thresholds": {
+        "warning": 0.02,
+        "critical": 0.10
+      }
     }
   ]
 }
